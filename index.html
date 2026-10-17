@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Subathon</title>
+<style>
+:root { --purple:#a855f7; --pink:#ec4899; --bg:#090611; --panel:#160d25; --text:#f7f0ff; }
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:radial-gradient(circle at top,#25103e 0,#090611 55%);color:var(--text);min-height:100vh}
+button,input{font:inherit}
+button{cursor:pointer;border:1px solid #c084fc55;background:linear-gradient(135deg,#9333ea,#c026d3);color:white;border-radius:12px;padding:12px 16px;font-weight:700;box-shadow:0 0 18px #a855f744}
+button.secondary{background:#21132f;border:1px solid #a855f777;box-shadow:none}
+button.danger{background:#3b1026;border-color:#fb7185}
+.wrap{max-width:1050px;margin:auto;padding:24px}
+header{text-align:center;padding:20px 0 28px}
+.logo{display:inline-block;color:#fff;font-size:clamp(32px,7vw,58px);font-weight:900;letter-spacing:3px;text-shadow:0 0 10px #a855f7,0 0 28px #ec4899}
+.subtitle{color:#d8b4fe;margin-top:8px}
+.layout{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}
+.card{background:linear-gradient(145deg,#1a1028ee,#100a19ee);border:1px solid #a855f755;border-radius:20px;padding:22px;box-shadow:0 0 32px #6b21a822}
+h2{font-size:18px;margin:0 0 18px;color:#e9d5ff}
+.timer{font-size:clamp(42px,9vw,82px);font-weight:900;letter-spacing:2px;text-align:center;padding:20px 0;color:white;text-shadow:0 0 12px #a855f7,0 0 30px #d946ef}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input{min-width:0;width:100%;padding:12px;border-radius:10px;border:1px solid #8b5cf6;background:#0c0714;color:#fff}
+.field{margin:14px 0}
+.field label{display:block;color:#d8b4fe;font-size:13px;margin-bottom:7px}
+.row .field{flex:1;min-width:110px}
+.small{font-size:12px;color:#c4b5fd;line-height:1.5}
+.qrbox{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px}
+.qrbox img{width:190px;height:190px;max-width:100%;background:#fff;padding:8px;border-radius:12px}
+a{color:#f0abfc;overflow-wrap:anywhere}
+.history{max-height:170px;overflow:auto;font-size:13px;color:#ddd6fe}
+.history div{padding:7px 0;border-bottom:1px solid #ffffff12}
+footer{text-align:center;color:#a78bfa;font-size:12px;padding:22px}
+.hidden{display:none!important}
+body.overlay{background:transparent;min-height:100vh;overflow:hidden}
+.overlay-wrap{display:flex;align-items:center;gap:20px;padding:18px;width:max-content;max-width:100%;background:#10071edb;border:2px solid #c084fc;border-radius:20px;box-shadow:0 0 25px #a855f7aa}
+.overlay .timer{font-size:clamp(38px,7vw,64px);padding:0;white-space:nowrap}
+.overlay .qrmini img{width:115px;height:115px;background:white;padding:5px;border-radius:9px}
+.overlay .qrmini{font-size:12px;text-align:center;color:#f5d0fe}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.wrap{padding:14px}.card{padding:17px}}
+</style>
+</head>
+<body>
+<div id="main" class="wrap">
+<header>
+  <div class="logo">SUBATHON</div>
+  <div class="subtitle">Cada apoio pode levar a live mais longe 💜</div>
+</header>
+<div class="layout">
+  <section class="card">
+    <h2>⏱ Cronômetro</h2>
+    <div id="timer" class="timer">00:00:00</div>
+    <div class="controls">
+      <button id="toggle">▶ Iniciar</button>
+      <button class="secondary" data-add="60">+ 1 min</button>
+      <button class="secondary" data-add="300">+ 5 min</button>
+      <button class="secondary" data-add="600">+ 10 min</button>
+      <button class="secondary" data-add="1800">+ 30 min</button>
+      <button class="secondary" data-add="-60">− 1 min</button>
+      <button class="danger" id="reset">Reiniciar</button>
+    </div>
+    <div class="field">
+      <label for="customMinutes">Adicionar tempo personalizado (minutos)</label>
+      <div class="row"><input id="customMinutes" type="number" min="1" placeholder="Ex.: 15"><button id="addCustom">Adicionar</button></div>
+    </div>
+    <div class="field">
+      <label for="startTime">Tempo inicial (minutos)</label>
+      <div class="row"><input id="startTime" type="number" min="0" placeholder="Ex.: 120"><button id="setStart" class="secondary">Definir</button></div>
+    </div>
+    <p class="small">O cronômetro e o histórico ficam salvos neste navegador. Para manter a contagem entre dispositivos, será necessária uma versão com servidor.</p>
+  </section>
+  <aside class="card">
+    <h2>💜 Apoie a live</h2>
+    <div class="qrbox">
+      <img id="qr" alt="QR Code para apoiar pela LivePix">
+      <strong>Escaneie para apoiar</strong>
+      <a id="livepixLink" href="https://livepix.gg/pilots" target="_blank" rel="noopener">livepix.gg/pilots</a>
+      <div class="small">O QR abre seu link público da LivePix.</div>
+    </div>
+    <hr style="border-color:#a855f733;margin:22px 0">
+    <h2>📋 Histórico</h2>
+    <div id="history" class="history">Nenhuma alteração ainda.</div>
+    <div class="controls" style="margin-top:12px"><button id="clearHistory" class="secondary">Limpar histórico</button></div>
+  </aside>
+</div>
+<div class="card" style="margin-top:18px">
+  <h2>🎥 Usar no OBS Studio</h2>
+  <p class="small">Abra o arquivo <b>index.html</b> no navegador para controlar o cronômetro. Para uma versão simples de overlay, abra <b>overlay.html</b> no OBS como fonte de navegador local. O overlay mostra o cronômetro e o QR, mas nesta versão ele roda separadamente e não sincroniza automaticamente com a página de controle.</p>
+  <p class="small"><b>Importante:</b> as doações ainda não adicionam tempo automaticamente. Para isso, será necessário hospedar um pequeno servidor seguro e configurar o webhook da LivePix. Não coloque segredos da API dentro do HTML público.</p>
+</div>
+<footer>SUBATHON • Roxo neon</footer>
+</div>
+
+<div id="overlay" class="overlay-wrap hidden">
+  <div>
+    <div style="font-size:12px;color:#e9d5ff;letter-spacing:2px;font-weight:bold">SUBATHON</div>
+    <div id="overlayTimer" class="timer">00:00:00</div>
+  </div>
+  <div class="qrmini"><img id="overlayQr" alt="QR LivePix"><div>APOIE A LIVE</div></div>
+</div>
+<script>
+const LIVEPIX = "https://livepix.gg/pilots";
+const params = new URLSearchParams(location.search);
+const isOverlay = params.get("overlay") === "1";
+if (isOverlay) {
+  document.body.className = "overlay";
+  document.getElementById("main").classList.add("hidden");
+  document.getElementById("overlay").classList.remove("hidden");
+}
+const qrURL = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(LIVEPIX);
+document.getElementById("qr").src = qrURL;
+document.getElementById("overlayQr").src = qrURL;
+const fmt = n => {
+  n = Math.max(0, Math.floor(n));
+  const h = String(Math.floor(n/3600)).padStart(2,"0");
+  const m = String(Math.floor((n%3600)/60)).padStart(2,"0");
+  const s = String(n%60).padStart(2,"0");
+  return `${h}:${m}:${s}`;
+};
+let state;
+try { state = JSON.parse(localStorage.getItem("subathonState") || "{}"); } catch(e) { state = {}; }
+let remaining = Number.isFinite(state.remaining) ? Math.max(0,state.remaining) : 7200;
+let running = false, lastTick = Date.now();
+let history = Array.isArray(state.history) ? state.history : [];
+function save(){ try{localStorage.setItem("subathonState",JSON.stringify({remaining,history}));}catch(e){} }
+function render(){
+  document.getElementById("timer").textContent = fmt(remaining);
+  document.getElementById("overlayTimer").textContent = fmt(remaining);
+  const btn=document.getElementById("toggle");
+  if(btn) btn.textContent = running ? "⏸ Pausar" : "▶ Iniciar";
+  const h=document.getElementById("history");
+  if(h) h.innerHTML = history.length ? history.slice().reverse().map(x=>`<div>${x}</div>`).join("") : "Nenhuma alteração ainda.";
+}
+function log(msg){ history.push(new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})+" — "+msg); history=history.slice(-50); save(); render(); }
+function add(seconds,desc){remaining=Math.max(0,remaining+seconds); log(desc); save(); render();}
+document.getElementById("toggle")?.addEventListener("click",()=>{running=!running;lastTick=Date.now();render();});
+document.querySelectorAll("[data-add]").forEach(b=>b.addEventListener("click",()=>{const v=Number(b.dataset.add);add(v,(v>0?"+":"")+Math.floor(v/60)+" min");}));
+document.getElementById("addCustom")?.addEventListener("click",()=>{const v=Number(document.getElementById("customMinutes").value);if(!Number.isFinite(v)||v<=0){alert("Digite uma quantidade de minutos maior que zero.");return;}add(Math.round(v*60),`+ ${v} min (personalizado)`);document.getElementById("customMinutes").value="";});
+document.getElementById("setStart")?.addEventListener("click",()=>{const v=Number(document.getElementById("startTime").value);if(!Number.isFinite(v)||v<0){alert("Digite um tempo inicial válido.");return;}remaining=Math.round(v*60);log(`Tempo definido para ${v} min`);});
+document.getElementById("reset")?.addEventListener("click",()=>{if(confirm("Reiniciar o cronômetro para 2 horas?")){remaining=7200;running=false;log("Cronômetro reiniciado para 2 horas");}});
+document.getElementById("clearHistory")?.addEventListener("click",()=>{if(confirm("Limpar o histórico?")){history=[];save();render();}});
+setInterval(()=>{if(running){const now=Date.now();const elapsed=Math.floor((now-lastTick)/1000);if(elapsed>0){remaining=Math.max(0,remaining-elapsed);lastTick+=elapsed*1000;if(remaining===0)running=false;save();render();}}},250);
+render();
+</script>
+</body>
+</html>

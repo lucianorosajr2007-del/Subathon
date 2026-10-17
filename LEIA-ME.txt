@@ -1,0 +1,20 @@
+SUBATHON — arquivo inicial
+
+Arquivos:
+- index.html: painel de controle do cronômetro e QR da LivePix.
+- overlay.html: visual transparente para usar como arquivo local no OBS.
+
+Como abrir:
+1. Extraia o ZIP.
+2. Abra index.html no navegador.
+3. O cronômetro começa com 2 horas; use Iniciar, Pausar e os botões para ajustar.
+
+LivePix:
+- QR Code e link apontam para https://livepix.gg/pilots.
+- O QR é carregado por um serviço online, então o computador precisa de internet.
+- Esta versão NÃO recebe confirmação automática de pagamento e NÃO adiciona tempo automaticamente.
+- Para ativar isso será necessário um servidor seguro que receba webhooks da LivePix. Nunca coloque client_secret ou tokens secretos em arquivos HTML públicos.
+
+OBS:
+- overlay.html é um overlay transparente local de demonstração.
+- Por segurança e por limitações de páginas locais, o overlay não sincroniza de forma confiável com o painel de controle separado. Para sincronização real, hospedaremos o painel e o overlay juntos com um backend.

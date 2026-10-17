@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Subathon Overlay</title>
+<style>
+html,body{margin:0;background:transparent;font-family:Arial,sans-serif;color:white}
+.wrap{display:flex;align-items:center;gap:18px;width:max-content;max-width:100%;padding:14px 18px;background:#10071edb;border:2px solid #c084fc;border-radius:18px;box-shadow:0 0 25px #a855f7aa}
+.brand{font-size:12px;color:#e9d5ff;letter-spacing:2px;font-weight:bold}
+.timer{font-size:54px;font-weight:900;white-space:nowrap;text-shadow:0 0 10px #a855f7,0 0 25px #d946ef}
+.qr{text-align:center;font-size:11px;color:#f5d0fe;font-weight:bold}
+.qr img{display:block;width:110px;height:110px;background:#fff;padding:4px;border-radius:8px}
+</style></head><body><div class="wrap"><div><div class="brand">SUBATHON</div><div id="timer" class="timer">00:00:00</div></div><div class="qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&amp;data=https%3A%2F%2Flivepix.gg%2Fpilots" alt="QR LivePix">APOIE A LIVE</div></div>
+<script>
+let seconds=7200, running=false, last=Date.now();
+try {const s=JSON.parse(localStorage.getItem("subathonState")||"{}"); if(Number.isFinite(s.remaining)) seconds=Math.max(0,s.remaining);}catch(e){}
+function fmt(n){n=Math.max(0,Math.floor(n));return String(Math.floor(n/3600)).padStart(2,"0")+":"+String(Math.floor(n%3600/60)).padStart(2,"0")+":"+String(n%60).padStart(2,"0");}
+function update(){try{const s=JSON.parse(localStorage.getItem("subathonState")||"{}");if(Number.isFinite(s.remaining))seconds=Math.max(0,s.remaining);}catch(e){} document.getElementById("timer").textContent=fmt(seconds);}
+update();setInterval(update,1000);
+</script></body></html>
